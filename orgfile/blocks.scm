@@ -160,7 +160,8 @@
     (make-drawer-node name)))
 
 (define (parse-drawer node parser)
-  (cond ((drawer-end parser)
+  (cond ((drawer-start parser) node)
+	((drawer-end parser)
          (close-node node))
         ((drawer-property parser) => (cut add-drawer-property node <>))
         (else

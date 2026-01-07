@@ -139,6 +139,7 @@
 	  (car (node-children
 		(car (node-children
 		      (car (node-children
-			    (parse-orgfile "* Heading \n:Note:\na drawer content\n:END:")))))))))))
+			    (car (node-children
+				  (parse-orgfile "* Heading \n:Note:\na drawer content\n:END:")))))))))))))
 
 (test-end "logs/orgfile-tests")
