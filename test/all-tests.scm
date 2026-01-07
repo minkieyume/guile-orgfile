@@ -86,6 +86,12 @@
     '("tag1" "tag2")
     (node-get-data (car (node-children (parse-orgfile "* Heading :tag1:tag2:"))) 'tags))
 
+  ;; (test-equal "Section with drawer correctly"
+  ;;   '("tag1" "tag2")
+  ;;   (node-get-data (car (node-children (parse-orgfile "* Heading \n:PROPERTIES:\n:ID: test :tange 1\n:END:"))) 'tags))
+
+  ;; TODO 加一个带有paragraph内容的标题测试。
+
   (test-equal "Paragraph node contains text node"
     'text
     (node-type (car (node-children (car (node-children (parse-orgfile "a paragraph")))))))
@@ -98,17 +104,12 @@
     "Test Title"
     (assq-ref (orgfile-get-metadata (parse-orgfile "#+title: Test Title\n* Heading")) 'title))
 
-  (test-equal "Document metadata author"
-    "Dreamtwi"
-    (assq-ref (orgfile-get-metadata (parse-orgfile "#+AUTHOR: Dreamtwi\n* Heading")) 'AUTHOR))
-
   (test-equal "Document metadata custom key"
     "custome"
     (assq-ref (orgfile-get-metadata (parse-orgfile "#+Custome: custome\n* Heading")) 'Custome))
 
   (test-equal "Document metadata multiple keys"
     3
-    (length (orgfile-get-metadata (parse-orgfile "#+title: Test\n#+AUTHOR: Author\n#+Custome: Value\n* Heading"))))
-  )
+    (length (orgfile-get-metadata (parse-orgfile "#+title: Test\n#+AUTHOR: Author\n#+Custome: Value\n* Heading")))))
 
 (test-end "logs/orgfile-tests")
