@@ -115,6 +115,7 @@
     (length (orgfile-get-metadata (parse-orgfile "#+title: Test\n#+AUTHOR: Author\n#+Custome: Value\n* Heading")))))
 
 ;; Drawer Test
+;; TODO 根据Drawer Test测试的要求，为node-type添加解析drawer的功能，并修改程序的其它可能的地方，以通过drawer test。
 (test-group "test-drawer"
   (test-equal "Section with drawer is correct type"
     'drawer
