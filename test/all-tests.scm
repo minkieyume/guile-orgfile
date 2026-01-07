@@ -86,17 +86,13 @@
     '("tag1" "tag2")
     (node-get-data (car (node-children (parse-orgfile "* Heading :tag1:tag2:"))) 'tags))
 
-  ;; (test-equal "Section with drawer correctly"
-  ;;   '("tag1" "tag2")
-  ;;   (node-get-data (car (node-children (parse-orgfile "* Heading \n:PROPERTIES:\n:ID: test :tange 1\n:END:"))) 'tags))
-
   (test-equal "Section with paragraph content"
     'paragraph
     (node-type (car (node-children (car (node-children (parse-orgfile "* Heading\na paragraph")))))))
 
   (test-equal "Section with paragraph has correct text"
     "a paragraph"
-    (car (node-children (car (node-children (car (node-children (parse-orgfile "* Heading\na paragraph"))))))))
+    (car (node-children (car (node-children (car (node-children (car (node-children (parse-orgfile "* Heading\na paragraph"))))))))))
 
   (test-equal "Paragraph node contains text node"
     'text
@@ -117,5 +113,31 @@
   (test-equal "Document metadata multiple keys"
     3
     (length (orgfile-get-metadata (parse-orgfile "#+title: Test\n#+AUTHOR: Author\n#+Custome: Value\n* Heading")))))
+
+;; Drawer Test
+(test-group "test-drawer"
+  (test-equal "Section with drawer is correct type"
+    'drawer
+    (node-type (car (node-children (car (node-children (parse-orgfile "* Heading \n:PROPERTIES:\n:Id: test :tange 1\n:END:")))))))
+
+  (test-equal "Section with drawer is correct drawer name"
+    "DrawEr"
+    (node-get-data (car (node-children (car (node-children (parse-orgfile "* Heading \n:DrawEr:\n:Id: test :tange 1\n:END:"))))) 'name))
+
+  (test-equal "Section with drawer is correct drawer metadata"
+    "test :tange 1"
+    (assq-ref (drawer-get-metadata
+	       (car (node-children
+		     (car (node-children
+			   (parse-orgfile "* Heading \n:DrawEr:\n:Id: test :tange 1\n:END:"))))))
+	      'Id))
+
+  (test-equal "Section with drawer is correct drawer content"
+    "a drawer content"
+    (car (node-children
+	  (car (node-children
+		(car (node-children
+		      (car (node-children
+			    (parse-orgfile "* Heading \n:Note:\na drawer content\n:END:")))))))))))
 
 (test-end "logs/orgfile-tests")
