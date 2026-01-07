@@ -94,7 +94,21 @@
     "http://example.com"
     (node-get-data (car (node-children (car (node-children (parse-orgfile "[[http://example.com][example link]]"))))) 'url))
 
-  ;; TODO 添加 #+xxx: xxx 元数据测试。
+  (test-equal "Document metadata title"
+    "Test Title"
+    (assq-ref (orgfile-get-metadata (parse-orgfile "#+title: Test Title\n* Heading")) 'title))
+
+  (test-equal "Document metadata author"
+    "Dreamtwi"
+    (assq-ref (orgfile-get-metadata (parse-orgfile "#+AUTHOR: Dreamtwi\n* Heading")) 'AUTHOR))
+
+  (test-equal "Document metadata custom key"
+    "custome"
+    (assq-ref (orgfile-get-metadata (parse-orgfile "#+Custome: custome\n* Heading")) 'Custome))
+
+  (test-equal "Document metadata multiple keys"
+    3
+    (length (orgfile-get-metadata (parse-orgfile "#+title: Test\n#+AUTHOR: Author\n#+Custome: Value\n* Heading"))))
   )
 
 (test-end "logs/orgfile-tests")
