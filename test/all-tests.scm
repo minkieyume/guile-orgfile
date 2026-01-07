@@ -58,6 +58,34 @@
 
 (test-end "logs/orgfile-sxml-tests")
 
-;; TODO 根据 'test.scm'中，doc的格式，帮我补完下面的测试。
 (test-begin "logs/orgfile-tests")
+
+(test-group "document-structure"
+  (test-assert "Parse document returns document node"
+    (document-node? (parse-orgfile "* Heading")))
+
+  (test-equal "Document has section child"
+    'section
+    (node-type (car (node-children (parse-orgfile "* Heading")))))
+
+  (test-equal "Section has correct level"
+    1
+    (node-get-data (car (node-children (parse-orgfile "* Heading"))) 'level))
+
+  (test-equal "Section has correct headline"
+    "Heading"
+    (node-get-data (car (node-children (parse-orgfile "* Heading"))) 'headline))
+
+  (test-equal "Section with tags parses tags correctly"
+    '("tag1" "tag2")
+    (node-get-data (car (node-children (parse-orgfile "* Heading :tag1:tag2:"))) 'tags))
+
+  (test-equal "Paragraph node contains text node"
+    'text
+    (node-type (car (node-children (car (node-children (parse-orgfile "a paragraph")))))))
+
+  (test-equal "Link node has url and description"
+    "http://example.com"
+    (node-get-data (car (node-children (car (node-children (parse-orgfile "[[http://example.com][example link]]"))))) 'url)))
+
 (test-end "logs/orgfile-tests")
