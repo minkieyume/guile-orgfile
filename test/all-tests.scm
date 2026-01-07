@@ -1,5 +1,9 @@
 (use-modules (srfi srfi-64)
              (orgfile)
+	     (orgfile blocks)
+	     (orgfile inlines)
+	     (orgfile node)
+	     (orgfile sxml)
              (sxml simple))
 
 ;; To SXML Test
@@ -88,6 +92,9 @@
 
   (test-equal "Link node has url and description"
     "http://example.com"
-    (node-get-data (car (node-children (car (node-children (parse-orgfile "[[http://example.com][example link]]"))))) 'url)))
+    (node-get-data (car (node-children (car (node-children (parse-orgfile "[[http://example.com][example link]]"))))) 'url))
+
+  ;; TODO 添加 #+xxx: xxx 元数据测试。
+  )
 
 (test-end "logs/orgfile-tests")
