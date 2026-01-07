@@ -79,7 +79,8 @@
             prev-node-closed?
             print-node
 	    make-drawer-node
-	    drawer-node?))
+	    drawer-node?
+	    drawer-get-metadata))
 
 ;; Node-Type is one of:
 ;; - 'document
@@ -392,3 +393,11 @@
   (when (> d 0)
     (display "   ")
     (add-depth (- d 1))))
+
+(define (drawer-get-metadata drawer)
+  "Returns metadata from a drawer node as an association list."
+  (if (drawer-node? drawer)
+      (filter (lambda (a)
+                (not (memq (car a) '(name closed))))
+              (node-data drawer))
+      #f))

@@ -22,8 +22,8 @@
   #:use-module (orgfile sxml)
   #:export (parse-orgfile
             orgfile-get-metadata
-            orgfile->sxml
-	    drawer-get-metadata))
+            orgfile->sxml)
+  #:re-export (drawer-get-metadata))
 
 (define* (parse-orgfile #:optional (string-or-port (current-input-port)))
   "Parses an org document from the provided port or the current input port."
@@ -39,14 +39,6 @@ list of key value pairs. Returns false if argument is not a valid orgfile."
       (filter (lambda (a)
                 (not (eq? (car a) '__init)))
               (node-data orgfile))
-      #f))
-
-(define (drawer-get-metadata drawer)
-  "Returns metadata from a drawer node as an association list."
-  (if (drawer-node? drawer)
-      (filter (lambda (a)
-                (not (memq (car a) '(name closed))))
-              (node-data drawer))
       #f))
 
 (define (orgfile->sxml orgfile)

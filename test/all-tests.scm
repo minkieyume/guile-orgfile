@@ -59,7 +59,11 @@
 
   (test-equal "Parse headline with tags"
     '((div (@ (class "tag1 tag2")) (h1 "Headline with tags")))
-    (orgfile->sxml (parse-orgfile "* Headline with tags :tag1:tag2:"))))
+    (orgfile->sxml (parse-orgfile "* Headline with tags :tag1:tag2:")))
+
+  (test-equal "Parse headline and tags with drawer"
+    '((div (@ (class "tag1 tag2")) (h1 "Heading") (details (summary "DrawEr") (dl (dt "Id") (dd "test :tange 1")) (p "Write Content"))))
+    (orgfile->sxml (parse-orgfile "* Heading :tag1:tag2: \n:DrawEr:\n:Id: test :tange 1\nWrite Content\n:END:"))))
 
 (test-end "logs/orgfile-sxml-tests")
 
@@ -115,7 +119,6 @@
     (length (orgfile-get-metadata (parse-orgfile "#+title: Test\n#+AUTHOR: Author\n#+Custome: Value\n* Heading")))))
 
 ;; Drawer Test
-;; TODO 根据Drawer Test测试的要求，为node-type添加解析drawer的功能，并修改程序的其它可能的地方，以通过drawer test。
 (test-group "test-drawer"
   (test-equal "Section with drawer is correct type"
     'drawer
