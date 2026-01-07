@@ -21,6 +21,9 @@
   "Parses CommonMark blocks from PORT returning a CommonMark Document tree"
   (let loop ((root (make-document-node))
              (line (read-line-without-nul port)))
+    ;; (display "parse-block: ")
+    ;; (write line)
+    ;; (newline)
     (if (eof-object? line)
         ;;TODO clean up list items with only one child (paragraph)
         root
@@ -29,15 +32,18 @@
 
 ;; Node Parser -> Node
 (define (parse-open-block node parser)
+  ;; (display "parse-open-block: ")
+  ;; (write parser)
+  ;; (newline)
   (cond ((node-closed? node) node)
         ((document-node? node) (parse-document-block node parser))
         ((section-node? node) (parse-section-block node parser))
-        ((drawer-node? node) (parse-drawer node parser))
-        ;((table-node? node) (parse-table node parser))
-        ;((code-block-node? node) (parse-code-block node parser))
+        ((drawer-node? node) (parse-drawer node parser))	
+        ;;((table-node? node) (parse-table node parser))
+        ;;((code-block-node? node) (parse-code-block node parser))
         ((list-node? node) (parse-list node parser))
-        ; items always under list, list does not call this fn
-        ;((item-node? node) (parse-item node parser))
+        ;; items always under list, list does not call this fn
+        ;;((item-node? node) (parse-item node parser))
         ((paragraph-node? node) (parse-paragraph node parser))))
 
 ;; read metadata from beginning of file
@@ -61,17 +67,21 @@
 
 ;; Node Parser -> Node
 (define (parse-container-block node parser)
+  ;; (display "parse-container-block: ")
+  ;; (write parser)
+  ;; (newline)
   (cond ((and (no-children? node) (empty-line parser)) ;; empty line
          node)
-        ((no-children? node)                            ;; first line
+        ((no-children? node) ;; first line
          (add-child-node node (parse-line parser)))
         ((and (node-closed? (last-child node)) (not (empty-line parser))) ;; new block
          (add-child-node node (parse-line parser)))
         (else (let ((new-child (parse-open-block (last-child node) parser)))
                 (cond ((and (not (empty-line parser))
                             (node-closed? new-child)
-                            ; these nodes close themselves without reading the next line
-                            ;(not (fenced-code-node? new-child))
+			    (not (drawer-node? new-child))
+			    ;; these nodes close themselves without reading the next line
+			    ;;(not (fenced-code-node? new-child))
                             )
                        (add-child-node (replace-last-child node new-child)
                                        (parse-line parser)))
@@ -127,6 +137,9 @@
 
 ;; Parser -> Node
 (define (parse-line parser)
+  ;; (display "parse-line: ")
+  ;; (write parser)
+  ;; (newline)
   (let ((nonspace-parser (parser-advance-next-nonspace parser)))
     (cond ((empty-line nonspace-parser)              (make-blank-node))
           ((section-headline parser)                => (cut make-section parser <>))
@@ -134,12 +147,12 @@
           ((and
             (parser-indented? parser nonspace-parser)
             (list-item nonspace-parser))            => (cut make-new-list parser nonspace-parser <>))
-          ;((parser-indented? parser nonspace-parser) (make-code-block parser))
-          ;((block-quote nonspace-parser)          => make-block-quote)
-          ;((atx-heading nonspace-parser)          => make-atx-heading)
-          ;((fenced-code nonspace-parser)          => make-fenced-code)
-          ;((bullet-list-marker nonspace-parser)   => (cut make-bullet-list-marker parser <>))
-          ;((ordered-list-marker nonspace-parser)  => (cut make-ordered-list-marker parser <>))
+          ;;((parser-indented? parser nonspace-parser) (make-code-block parser))
+          ;;((block-quote nonspace-parser)          => make-block-quote)
+          ;;((atx-heading nonspace-parser)          => make-atx-heading)
+          ;;((fenced-code nonspace-parser)          => make-fenced-code)
+          ;;((bullet-list-marker nonspace-parser)   => (cut make-bullet-list-marker parser <>))
+          ;;((ordered-list-marker nonspace-parser)  => (cut make-ordered-list-marker parser <>))
           (else                                      (make-paragraph nonspace-parser)))))
 
 
@@ -160,6 +173,9 @@
     (make-drawer-node name)))
 
 (define (parse-drawer node parser)
+  ;; (display "parse-drawer: ")
+  ;; (write parser)
+  ;; (newline)
   (cond ((drawer-end parser)
          (close-node node))
         ((drawer-property parser) => (cut add-drawer-property node <>))	

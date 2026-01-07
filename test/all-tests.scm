@@ -127,7 +127,7 @@
   (test-equal "Section with drawer is correct drawer name"
     "DrawEr"
     (node-get-data (car (node-children (car (node-children (parse-orgfile "* Heading \n:DrawEr:\n:Id: test :tange 1\n:END:"))))) 'name))
-
+  
   (test-equal "Section with drawer is correct drawer metadata"
     "test :tange 1"
     (assq-ref (drawer-get-metadata
@@ -144,5 +144,12 @@
 		      (car (node-children
 			    (car (node-children
 				  (parse-orgfile "* Heading \n:Note:\na drawer content\n:END:")))))))))))))
+
+  ;; (display "parsed:")
+  ;; (newline)
+  ;; (write (car (node-children
+  ;; 	       (car (node-children
+  ;; 		     (parse-orgfile "* Heading \n:DrawEr:\n:Id: test :tange 1\n:END:"))))))
+  ;; (newline)
 
 (test-end "logs/orgfile-tests")
