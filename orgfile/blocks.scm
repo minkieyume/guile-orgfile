@@ -32,7 +32,7 @@
   (cond ((node-closed? node) node)
         ((document-node? node) (parse-document-block node parser))
         ((section-node? node) (parse-section-block node parser))
-        ;((drawer-node? node) (parse-drawer node parser))
+        ((drawer-node? node) (parse-drawer node parser))
         ;((table-node? node) (parse-table node parser))
         ;((code-block-node? node) (parse-code-block node parser))
         ((list-node? node) (parse-list node parser))
@@ -130,6 +130,7 @@
   (let ((nonspace-parser (parser-advance-next-nonspace parser)))
     (cond ((empty-line nonspace-parser)              (make-blank-node))
           ((section-headline parser)                => (cut make-section parser <>))
+	  ((drawer-start parser)                    => (cut make-drawer parser <>))
           ((and
             (parser-indented? parser nonspace-parser)
             (list-item nonspace-parser))            => (cut make-new-list parser nonspace-parser <>))
@@ -153,6 +154,25 @@
                    (get-section-tags (substring str (match:start tag-match)))
                    '())))
     (make-section-node level headline tags)))
+
+(define (make-drawer parser match)
+  (let ((name (match:substring match 1)))
+    (make-drawer-node name)))
+
+(define (parse-drawer node parser)
+  (cond ((drawer-end parser)
+         (close-node node))
+        ((drawer-property parser) => (cut add-drawer-property node <>))
+        (else
+         (let ((line-node (parse-line parser)))
+           (if (blank-node? line-node)
+               node
+               (add-child-node node line-node))))))
+
+(define (add-drawer-property node match)
+  (let* ((key (string->symbol (match:substring match 1)))
+         (value (match:substring match 2)))
+    (node-add-data node key value)))
 
 (define (make-new-list parser nonspace-parser match)
   (let* ((indent (parser-indent parser nonspace-parser))

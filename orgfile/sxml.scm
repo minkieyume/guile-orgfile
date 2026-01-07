@@ -1,5 +1,3 @@
-
-
 (define-module (orgfile sxml)
   #:use-module (orgfile inlines)
   #:use-module (orgfile parser)

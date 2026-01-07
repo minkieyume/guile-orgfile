@@ -77,7 +77,9 @@
             open-descendant?
             prev-node?
             prev-node-closed?
-            print-node))
+            print-node
+	    make-drawer-node
+	    drawer-node?))
 
 ;; Node-Type is one of:
 ;; - 'document
@@ -234,6 +236,15 @@
 (define (item-node? n)
   (node-type? n 'item))
 
+;; Drawer node
+;; represents a drawer which contains metadata and content
+;; String Data Node -> Node
+(define (make-drawer-node name)
+  (make-node 'drawer `((name . ,name) (closed . #f))))
+
+;; Node -> Boolean
+(define (drawer-node? n)
+  (node-type? n 'drawer))
 
 ;; Text node
 ;; String Boolean -> Node

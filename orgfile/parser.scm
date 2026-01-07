@@ -26,7 +26,9 @@
             list-item
             metadata
             uri-link
-            ))
+	    drawer-start
+	    drawer-end
+	    drawer-property))
 
 
 (define-record-type <parser>
@@ -140,6 +142,9 @@
 (define re-section-tags (make-regexp "[ \t](:[^ \t]+)+:[ \t]*$"))
 (define re-list-item (make-regexp "^[1-9][:digit:]*\\) |^[1-9][:digit:]*\\. |^- |^\\+ |^\\* "))
 (define re-metadata (make-regexp "^#\\+[a-zA-Z]+:"))
+(define re-drawer-start (make-regexp "^[ \t]*:([a-zA-Z]+):[ \t]*$"))
+(define re-drawer-end (make-regexp "^[ \t]*:END:[ \t]*$"))
+(define re-drawer-property (make-regexp "^[ \t]*:([a-zA-Z]+):[ \t]+(.*)$"))
 ;; Peg for link
 (define-peg-pattern brace body (or "[" "]"))
 (define-peg-pattern doubleback body (and (ignore "\\") "\\"))
@@ -188,3 +193,12 @@
 
 (define (uri-link str)
   (search-for-pattern full-link str))
+
+(define (drawer-start parser)
+  (regexp-exec re-drawer-start (parser-str parser) (parser-pos parser)))
+
+(define (drawer-end parser)
+  (regexp-exec re-drawer-end (parser-str parser) (parser-pos parser)))
+
+(define (drawer-property parser)
+  (regexp-exec re-drawer-property (parser-str parser) (parser-pos parser)))
