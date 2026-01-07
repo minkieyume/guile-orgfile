@@ -90,7 +90,13 @@
   ;;   '("tag1" "tag2")
   ;;   (node-get-data (car (node-children (parse-orgfile "* Heading \n:PROPERTIES:\n:ID: test :tange 1\n:END:"))) 'tags))
 
-  ;; TODO 加一个带有paragraph内容的标题测试。
+  (test-equal "Section with paragraph content"
+    'paragraph
+    (node-type (car (node-children (car (node-children (parse-orgfile "* Heading\na paragraph")))))))
+
+  (test-equal "Section with paragraph has correct text"
+    "a paragraph"
+    (car (node-children (car (node-children (car (node-children (parse-orgfile "* Heading\na paragraph"))))))))
 
   (test-equal "Paragraph node contains text node"
     'text
