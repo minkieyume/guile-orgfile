@@ -2,6 +2,7 @@
              (orgfile)
              (sxml simple))
 
+;; To SXML Test
 (test-begin "logs/orgfile-sxml-tests")
 
 (test-group "list-recognition"
@@ -58,6 +59,7 @@
 
 (test-end "logs/orgfile-sxml-tests")
 
+;; Org File test
 (test-begin "logs/orgfile-tests")
 
 (test-group "document-structure"
