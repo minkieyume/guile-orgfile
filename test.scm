@@ -45,6 +45,34 @@ This is a list:
 |----+----+----+----|
  another paragraph.")
 
+(define org-text-simple
+"#+title: Test Title
+#+AUTHOR: Dreamtwi
+#+Custome: custome
+* A typical org file :TAG1:TAG2:
+:CUSTOM:
+:drawer1: :hello src/hello.rs
+:drawer2: test1 test2
+:END:
+
+a paragraph with an [[http://example.com][example link]]
+
+** Sections can be nested
+:PROPERTIES:
+:header-args: :tangle src/main.rs
+:arg1: test
+:END:
+ 1. List item 1
+ 2. List item 2
+
+ another paragraph.")
+
+(define simple-doc (parse-orgfile org-text-simple))
+(display "simple-doc=")
+(newline)
+(write simple-doc)
+(newline)
+
 ;; Parse the org document
 (define doc (parse-orgfile org-text))
 (display "doc=")

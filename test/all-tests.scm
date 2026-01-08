@@ -136,6 +136,14 @@
 			   (parse-orgfile "* Heading \n:DrawEr:\n:Id: test :tange 1\n:END:"))))))
 	      'Id))
 
+  (test-equal "Section with drawer is correct drawer metadata tangle 1"
+    "test :tange 1"
+    (assq-ref (drawer-get-metadata
+	       (car (node-children
+		     (car (node-children
+			   (parse-orgfile "* Heading \n:DrawEr:\n:Drawer1: test :tange 1\n:END:"))))))
+	      'Drawer1))
+
   (test-equal "Section with drawer is correct drawer content"
     "a drawer content"
     (car (node-children
