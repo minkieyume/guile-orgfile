@@ -13,6 +13,8 @@
 
 a paragraph with an [[http://example.com][example link]]
 
+[[http://example.com]]
+
 ** Sections can be nested
 :PROPERTIES:
 :header-args: :tangle src/main.rs

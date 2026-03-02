@@ -8,6 +8,7 @@
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (sxml simple)
+  #:use-module (ice-9 regex)
   #:export (document->sxml))
 
 ;; unused
@@ -65,10 +66,17 @@ sxml."
               (dl ,@(apply append dl-content))
               ,@(fold+convert children))))
 
+(define re-image-url (make-regexp ".*\\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|avif|apng)$"))
+
 (define (link-node->sxml n)
   (let ((url (node-get-data n 'url))
         (desc (node-get-data n 'description)))
-    `(a (@ (href ,url)) ,desc)))
+    (cond ((string=? "" desc)
+	   `(a (@ (href ,url)) ,url))
+	  ((regexp-exec re-image-url url)
+	   `(img (@ (href ,url)
+		    (alt ,desc))))
+	  (else `(a (@ (href ,url)) ,desc)))))
 
 (define (text-node->sxml n)
   (string-join (reverse (node-children n))))
